@@ -1,0 +1,96 @@
+﻿@model IEnumerable<ReadingTracker.Models.Book>
+
+@{
+    ViewData["Title"] = "Books";
+}
+<h1> Books Read in @ViewBag.selectedYear</h1>
+
+<div class="d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+        <div style="width:100px; font-weight:bold">
+            <label for="yearSelector" style="width:100px;">Select Year</label>
+        </div>
+        <select id="yearSelector" class="form-select" name="year" onchange="changeYear()">
+            <option value="@ViewBag.selectedYear">@ViewBag.selectedYear</option>
+            @foreach (var year in ViewBag.distinctYears)
+            {
+                @if (year != ViewBag.selectedYear)
+                {
+                    <option value="@year">@year</option>
+                }
+            }
+        </select>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Add Book</a>
+    </div>
+<br />
+
+
+<table class="table table-hover">
+    <thead>
+        <tr class="table-light">
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PageCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EndDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PageCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" title="Edit" style="text-decoration: none;">
+                        <i class="bi bi-pencil"></i>
+                    </a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" title="Details" style="text-decoration: none;">
+                        <i class="bi bi-eye"></i>
+                    </a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" title="Delete" style="text-decoration: none;">
+                        <i class="bi bi-trash"></i>
+                    </a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<script>
+    function changeYear() {
+        var selectedYear = document.getElementById("yearSelector").value;
+        // Redirect to the Index page with the selected year
+        window.location.href = "/Books/Index?year=" + selectedYear;
+    }
+</script>

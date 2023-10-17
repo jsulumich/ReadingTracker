@@ -1,0 +1,49 @@
+﻿@model ReadingTracker.Models.Statistic
+
+@{
+    ViewData["Title"] = "Statistics";
+}
+
+<h1>Statistics</h1>
+
+<hr />
+
+<div class="d-flex align-items-center">
+    <label for="yearSelector" style="width:100px; font-weight:bold;">Select Year:</label>
+    <select id="yearSelector" class="form-select" style="width:100px;" name="year" onchange="changeYear()">
+        <option value="@ViewBag.selectedYear">@ViewBag.selectedYear</option>
+        @foreach (var year in ViewBag.distinctYears)
+        {
+            @if (year != ViewBag.selectedYear)
+            {
+                <option value="@year">@year</option>
+            }
+        }
+    </select>
+</div>
+<br/>
+
+@if (Model.SelectedYear.HasValue)
+{
+    <h4><b><u>@Model.SelectedYear Statistics</u></b></h4>
+    <h5><b>Total Books Read: </b>@Model.TotalBooksRead</h5>
+    <h5><b>Average Rating: </b>@(Model.AverageRating.HasValue ? Math.Round(Model.AverageRating.Value, 2) : (double?)null)</h5>
+    <h5><b>Average Days Per Book: </b>@(Model.AverageDaysPerBook.HasValue ? Math.Round(Model.AverageDaysPerBook.Value, 2) : (double?)null)</h5>
+    <h5><b>Total Pages Read: </b>@string.Format("{0:N0}", Model.TotalPagesRead)</h5>
+    <h5><b>Top Author: </b>@Model.TopAuthor</h5>
+  
+}
+else
+{
+    <p>No data available for the selected year.</p>
+}
+
+
+<script>
+    function changeYear() {
+        var selectedYear = document.getElementById("yearSelector").value;
+        // Redirect to the Index page with the selected year
+        window.location.href = "/Statistic/Index?year=" + selectedYear;
+    }
+</script>
+
