@@ -9,17 +9,19 @@
 <hr />
 
 <div class="d-flex align-items-center">
-    <label for="yearSelector" style="width:100px; font-weight:bold;">Select Year:</label>
-    <select id="yearSelector" class="form-select" style="width:100px;" name="year" onchange="changeYear()">
-        <option value="@ViewBag.selectedYear">@ViewBag.selectedYear</option>
-        @foreach (var year in ViewBag.distinctYears)
-        {
-            @if (year != ViewBag.selectedYear)
+    <form asp-action="Index">
+        <label for="yearSelector" style="width:100px; font-weight:bold;">Select Year:</label>
+        <select id="yearSelector" class="form-select" style="width:100px;" name="year" onchange="this.form.submit()">
+            <option value="@ViewBag.selectedYear">@ViewBag.selectedYear</option>
+            @foreach (var year in ViewBag.distinctYears)
             {
-                <option value="@year">@year</option>
+                @if (year != ViewBag.selectedYear)
+                {
+                    <option value="@year">@year</option>
+                }
             }
-        }
-    </select>
+        </select>
+    </form>
 </div>
 <br/>
 
@@ -37,13 +39,3 @@ else
 {
     <p>No data available for the selected year.</p>
 }
-
-
-<script>
-    function changeYear() {
-        var selectedYear = document.getElementById("yearSelector").value;
-        // Redirect to the Index page with the selected year
-        window.location.href = "/Statistic/Index?year=" + selectedYear;
-    }
-</script>
-

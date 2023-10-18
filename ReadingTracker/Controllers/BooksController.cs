@@ -17,7 +17,7 @@ namespace ReadingTracker.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index([FromQuery] int? year)
+        public async Task<IActionResult> Index(int? year)
         {
             try
             {
@@ -40,7 +40,6 @@ namespace ReadingTracker.Controllers
                 {
                     // Default to the current year
                     year = DateTime.Now.Year;
-
                 }
                 ViewBag.selectedYear = year.Value;
 
@@ -50,7 +49,6 @@ namespace ReadingTracker.Controllers
                     .Where(book => book.StartDate.Year == year || book.EndDate.Year == year)
                     .OrderBy(book => book.StartDate)
                     .ToList();
-
 
                 return View(books);
             }

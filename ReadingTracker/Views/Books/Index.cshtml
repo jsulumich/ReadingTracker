@@ -6,21 +6,23 @@
 <h1> Books Read in @ViewBag.selectedYear</h1>
 
 <div class="d-flex align-items-center justify-content-between">
-    <div class="d-flex align-items-center">
-        <div style="width:100px; font-weight:bold">
-            <label for="yearSelector" style="width:100px;">Select Year</label>
-        </div>
-        <select id="yearSelector" class="form-select" name="year" onchange="changeYear()">
-            <option value="@ViewBag.selectedYear">@ViewBag.selectedYear</option>
-            @foreach (var year in ViewBag.distinctYears)
-            {
-                @if (year != ViewBag.selectedYear)
+    <form asp-action="Index">
+        <div class="d-flex align-items-center">
+            <div style="width:100px; font-weight:bold">
+                <label for="yearSelector" style="width:100px;">Select Year</label>
+            </div>
+            <select id="yearSelector" class="form-select" name="year" onchange="this.form.submit()">
+                <option value="@ViewBag.selectedYear">@ViewBag.selectedYear</option>
+                @foreach (var year in ViewBag.distinctYears)
                 {
-                    <option value="@year">@year</option>
+                    @if (year != ViewBag.selectedYear)
+                    {
+                        <option value="@year">@year</option>
+                    }
                 }
-            }
-        </select>
-    </div>
+            </select>
+        </div>
+    </form>
     <a asp-action="Create" class="btn btn-primary">Add Book</a>
     </div>
 <br />
@@ -86,11 +88,3 @@
 }
     </tbody>
 </table>
-
-<script>
-    function changeYear() {
-        var selectedYear = document.getElementById("yearSelector").value;
-        // Redirect to the Index page with the selected year
-        window.location.href = "/Books/Index?year=" + selectedYear;
-    }
-</script>

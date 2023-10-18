@@ -15,7 +15,7 @@ namespace ReadingTracker.Controllers
             _logger = logger;   
 
         }
-        public async Task<IActionResult> Index([FromQuery] int? year)
+        public async Task<IActionResult> Index(int? year)
         {
             if (_context == null)
             {
