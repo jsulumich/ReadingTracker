@@ -7,12 +7,12 @@ namespace ReadingTracker.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly ReadingTrackerDbContext _context;
         private readonly ILogger<BooksController> _logger;
+        private readonly IBookDataAccess _bookDataAccess;
 
-        public BooksController(ReadingTrackerDbContext context, ILogger<BooksController> logger)
+        public BooksController(IBookDataAccess bookDataAccess, ILogger<BooksController> logger)
         {
-            _context = context;
+            _bookDataAccess = bookDataAccess;
             _logger = logger;
         }
 
@@ -20,19 +20,9 @@ namespace ReadingTracker.Controllers
         public async Task<IActionResult> Index(int? year)
         {
             try
-            {
-                if (_context == null)
-                {
-                    return Problem("DbContext is null.");
-                }
-
-                var allBooks = await _context.Books.ToListAsync();
-
+            {                             
                 // Get distinct years from both StartDate and EndDate
-                var distinctYears = allBooks
-                    .SelectMany(book => new[] { book.StartDate.Year, book.EndDate.Year })
-                    .Distinct()
-                    .ToList();
+                var distinctYears = await _bookDataAccess.GetDistinctYears();
 
                 ViewBag.distinctYears = distinctYears;
 
@@ -43,14 +33,11 @@ namespace ReadingTracker.Controllers
                 }
                 ViewBag.selectedYear = year.Value;
 
-                _logger.LogInformation("Fetched books read for " + year.Value.ToString()); 
+                _logger.LogInformation("Fetched books read for " + year.Value); 
 
-                var books = allBooks
-                    .Where(book => book.StartDate.Year == year || book.EndDate.Year == year)
-                    .OrderBy(book => book.StartDate)
-                    .ToList();
+                var booksForSelectedYear = await _bookDataAccess.GetBooksForYear(year.Value);
 
-                return View(books);
+                return View(booksForSelectedYear);
             }
             catch(Exception  ex) 
             { 
@@ -62,13 +49,12 @@ namespace ReadingTracker.Controllers
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Books == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var book = await _context.Books
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var book = await _bookDataAccess.GetBookById(id.Value);
 
             if (book == null)
             {
@@ -94,8 +80,11 @@ namespace ReadingTracker.Controllers
             if (ModelState.IsValid)
             {
                 _logger.LogInformation("Adding book:" + book.Title);
-                _context.Add(book);
-                await _context.SaveChangesAsync();
+                int result = await _bookDataAccess.CreateBook(book);
+                if (result > 0)
+                {
+                    TempData["Message"] = "Added \"" + book.Title + "\" to database.";
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(book);
@@ -104,12 +93,8 @@ namespace ReadingTracker.Controllers
         // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Books == null)
-            {
-                return NotFound();
-            }
 
-            var book = await _context.Books.FindAsync(id);
+            var book = await _bookDataAccess.GetBookById(id);
             if (book == null)
             {
                 return NotFound();
@@ -133,13 +118,17 @@ namespace ReadingTracker.Controllers
             {
                 try
                 {
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
                     _logger.LogInformation("Editing Book:" + book.Title);
+                    int result = await _bookDataAccess.EditBook(book);
+                    if(result > 0)
+                    {
+                        TempData["Message"] = "Successfully edited \"" + book.Title + "\"";
+                    }
+                    _logger.LogInformation(result + " book record updated");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.Id))
+                    if (!_bookDataAccess.BookExists(book.Id))
                     {
                         return NotFound();
                     }
@@ -156,13 +145,8 @@ namespace ReadingTracker.Controllers
         // GET: Books/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Books == null)
-            {
-                return NotFound();
-            }
 
-            var book = await _context.Books
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var book = await _bookDataAccess.GetBookById(id);
             if (book == null)
             {
                 return NotFound();
@@ -176,24 +160,16 @@ namespace ReadingTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Books == null)
-            {
-                return Problem("Entity set 'ReadingTrackerDbContext.Books'  is null.");
-            }
-            var book = await _context.Books.FindAsync(id);
-            if (book != null)
-            {
-                _context.Books.Remove(book);
-            }
-            
-            await _context.SaveChangesAsync();
+            var book = await _bookDataAccess.GetBookById(id);
             _logger.LogInformation("Deleting book: " + book?.Title);
+
+            int result = await _bookDataAccess.DeleteBook(id);
+            if (result > 0)
+            {
+                TempData["Message"] = "Deleted \"" + book?.Title + "\" from database.";
+            }
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BookExists(int id)
-        {
-          return (_context.Books?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

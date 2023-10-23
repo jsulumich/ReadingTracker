@@ -27,6 +27,13 @@
     </div>
 <br />
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info" id="message">
+        @TempData["Message"]
+    </div>
+}
+
 
 <table class="table table-hover">
     <thead>

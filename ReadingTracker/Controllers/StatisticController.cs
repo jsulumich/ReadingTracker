@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ReadingTracker.Data;
 using ReadingTracker.Models;
 
@@ -7,45 +6,34 @@ namespace ReadingTracker.Controllers
 {
     public class StatisticController : Controller
     {
-        private readonly ReadingTrackerDbContext _context;
         private readonly ILogger<StatisticController> _logger;
-        public StatisticController(ReadingTrackerDbContext context, ILogger<StatisticController> logger)
+        private readonly IBookDataAccess _bookDataAccess;
+
+        public StatisticController(IBookDataAccess bookDataAccess, ILogger<StatisticController> logger)
         {
-            _context = context;
+            _bookDataAccess = bookDataAccess;
             _logger = logger;   
 
         }
         public async Task<IActionResult> Index(int? year)
         {
-            if (_context == null)
-            {
-                return Problem("DbContext is null.");
-            }
-
-            var allBooks = await _context.Books.ToListAsync();
-
             // Get distinct years from both StartDate and EndDate
-            var distinctYears = allBooks
-                .SelectMany(book => new[] { book.StartDate.Year, book.EndDate.Year })
-                .Distinct()
-                .ToList();
+            var distinctYears = await _bookDataAccess.GetDistinctYears();
 
             ViewBag.distinctYears = distinctYears;
 
             if (!year.HasValue)
             {
-                // Default to the current year
                 year = DateTime.Now.Year;
-
             }
             ViewBag.selectedYear = year.Value;
 
-            Statistic viewModel = GetStatsForYear(year);
+            var viewModel = await GetStatsForYear(year);
 
             return View(viewModel);
         }
 
-        private Statistic GetStatsForYear(int? year)
+        private async Task<Statistic> GetStatsForYear(int? year)
         {
             if(year == null) { year = DateTime.Now.Year; }
 
@@ -53,11 +41,9 @@ namespace ReadingTracker.Controllers
 
             var statsForYear = new Statistic();
 
-            var allBooksFromYear = _context.Books
-                .Where(book => book.StartDate.Year == year || book.EndDate.Year == year)
-                .ToList();
+            var allBooksFromYear = await _bookDataAccess.GetBooksForYear(year.Value);
 
-            statsForYear.TotalBooksRead = allBooksFromYear.Count;
+            statsForYear.TotalBooksRead = allBooksFromYear.Count();
            
             statsForYear.AverageRating = allBooksFromYear
                 .Where(book => book.Rating.HasValue)
