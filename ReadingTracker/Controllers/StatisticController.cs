@@ -33,9 +33,9 @@ namespace ReadingTracker.Controllers
             return View(viewModel);
         }
 
-        private async Task<Statistic> GetStatsForYear(int? year)
+        public async Task<Statistic> GetStatsForYear(int? year)
         {
-            if(year == null) { year = DateTime.Now.Year; }
+            year ??= DateTime.Now.Year;
 
             _logger.LogInformation("Getting statistics for " + year.Value);
 
@@ -44,14 +44,18 @@ namespace ReadingTracker.Controllers
             var allBooksFromYear = await _bookDataAccess.GetBooksForYear(year.Value);
 
             statsForYear.TotalBooksRead = allBooksFromYear.Count();
-           
+
             statsForYear.AverageRating = allBooksFromYear
-                .Where(book => book.Rating.HasValue)
-                .Average(book => book.Rating.Value);
+            .Where(book => book.Rating.HasValue)
+            .Select(book => book.Rating.Value)
+            .DefaultIfEmpty(0) // If there are no rated books, set the default value to 0
+            .Average();
 
             statsForYear.TotalPagesRead = allBooksFromYear
-                .Where(book => book.PageCount.HasValue)
-                .Sum(book => book.PageCount.Value);
+            .Where(book => book.PageCount.HasValue)
+            .Select(book => book.PageCount.Value)
+            .DefaultIfEmpty(0) // If there are no page counts, set the default value to 0
+            .Sum();
 
             statsForYear.TopAuthor = allBooksFromYear
                 .GroupBy(book => book.Author)

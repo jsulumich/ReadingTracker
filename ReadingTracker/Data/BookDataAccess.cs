@@ -41,7 +41,7 @@ namespace ReadingTracker.Data
 
         public async Task<Book> GetBookById(int? id)
         {
-            return await _context.Books.FindAsync(id);
+            return await _context.Books.FindAsync(id) ?? throw new Exception("Book not found");
         }
 
         public async Task<int> CreateBook(Book book)
