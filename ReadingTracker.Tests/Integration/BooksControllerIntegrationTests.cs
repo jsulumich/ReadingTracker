@@ -8,6 +8,7 @@ using ReadingTracker.Controllers;
 using ReadingTracker.Models;
 using ReadingTracker.Tests.Integration;
 using Xunit;
+using static System.Reflection.Metadata.BlobBuilder;
 
 public class BooksControllerIntegrationTests :  IntegrationTestBase
 {
@@ -30,19 +31,26 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
     }
 
     [Fact]
-    public async Task Index_RetrievesBooksForYear()
+    public async Task Index_RetrievesBooksForCurrentYear_ByDefault()
     {
         // Arrange in base class
         
         // Act
-        var result = await _booksController.Index(2023);
+        var result = await _booksController.Index(null);
 
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
         var modelData = viewResult.Model as IEnumerable<Book>;
+        Assert.NotNull(modelData);
+        Assert.Equal(2, modelData.Count());
 
-        // Verify that only books from 2023 are retrieved
-        Assert.Equal(2, modelData?.Count());
+        IEnumerable<Book> expectedBooks = new List<Book>
+            {
+                base.GetBookById(1),
+                base.GetBookById(2)
+        }.OrderBy(book => book.StartDate);
+
+        Assert.True(expectedBooks.SequenceEqual(modelData));
     }
 
     [Fact]
@@ -56,7 +64,7 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
         // Assert
         var viewResult = Assert.IsType<ViewResult>(result);
         var modelData = Assert.IsAssignableFrom<Book>(viewResult.Model);
-        Assert.Equal("Book 1", modelData.Title);
+        Assert.Equal(modelData,base.GetBookById(1));
     }
 
     [Fact]
@@ -94,7 +102,6 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
         var redirectResult = Assert.IsType<RedirectToActionResult>(result);
         Assert.Equal("Index", redirectResult.ActionName);
 
-        // Check if the book was added to the database
         var addedBook = _context.Books.FirstOrDefault(b => b.Title == "Test Book");
         Assert.NotNull(addedBook);
         Assert.Equal("Test Author", addedBook.Author);
