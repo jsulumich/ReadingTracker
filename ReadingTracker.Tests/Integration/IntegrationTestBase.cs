@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using ReadingTracker.Data;
-using ReadingTracker.Models;
+using ReadingTracker.Domain;
 
 namespace ReadingTracker.Tests.Integration
 {

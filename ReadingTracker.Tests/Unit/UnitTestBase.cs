@@ -1,5 +1,5 @@
 ﻿using Moq;
-using ReadingTracker.Data;
+using ReadingTracker.Domain;
 
 namespace ReadingTracker.Tests.Unit
 {

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ReadingTracker.Models;
-
-namespace ReadingTracker.Data
+﻿namespace ReadingTracker.Domain
 {
     public interface IBookDataAccess
     {
