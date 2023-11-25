@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReadingTracker.Models;
+using ReadingTracker.DataAccess;
 
 namespace ReadingTracker.Data
 {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReadingTracker.Models;
+using Microsoft.Extensions.Logging;
+using ReadingTracker.DataAccess;
 
 namespace ReadingTracker.Data
 {

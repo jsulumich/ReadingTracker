@@ -1,4 +1,4 @@
-﻿namespace ReadingTracker.Models
+﻿namespace ReadingTracker.DataAccess
 {
     public class Statistic
     {

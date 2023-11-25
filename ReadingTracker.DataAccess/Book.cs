@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace ReadingTracker.Models
+namespace ReadingTracker.DataAccess
 {
     public class Book
     {

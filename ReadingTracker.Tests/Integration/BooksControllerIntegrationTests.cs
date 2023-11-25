@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ReadingTracker.Controllers;
-using ReadingTracker.Models;
+using ReadingTracker.DataAccess;
 using ReadingTracker.Tests.Integration;
 using Xunit;
 using static System.Reflection.Metadata.BlobBuilder;
