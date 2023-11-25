@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ReadingTracker.Data;
-using ReadingTracker.Models;
+using ReadingTracker.Domain;
 
 namespace ReadingTracker.Controllers
 {

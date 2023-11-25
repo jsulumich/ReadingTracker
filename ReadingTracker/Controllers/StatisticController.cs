@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ReadingTracker.Data;
-using ReadingTracker.Models;
+using ReadingTracker.Domain;
 
 namespace ReadingTracker.Controllers
 {

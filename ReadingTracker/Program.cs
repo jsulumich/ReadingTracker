@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ReadingTracker.Data;
+using ReadingTracker.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
