@@ -2,7 +2,7 @@
 
 namespace ReadingTracker.Domain
 {
-    public class Book
+    public interface IBook
     {
         public int Id { get; set; }
         public string Title { get; set; }

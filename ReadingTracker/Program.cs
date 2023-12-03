@@ -10,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<ReadingTrackerDbContext>(options => options.UseSqlite(
     builder.Configuration.GetConnectionString("localDb")));
 builder.Services.AddScoped<IBookDataAccess,  BookDataAccess>();
+builder.Services.AddScoped<BookStatisticsCalculator, EfBookStatisticsCalculator>();
 
 var app = builder.Build();
 

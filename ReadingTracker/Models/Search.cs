@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace ReadingTracker.Domain
+namespace ReadingTracker.Models
 {
     public class Search
     {

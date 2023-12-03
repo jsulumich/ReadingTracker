@@ -32,7 +32,7 @@ namespace ReadingTracker.Data
             return distinctYears;
         }
 
-        public async Task<IEnumerable<Book>> GetBooksForYear(int year)
+        public async Task<IEnumerable<IBook>> GetBooksForYear(int year)
         {
             return await _context.Books
                 .Where(book => book.StartDate.Year == year || book.EndDate.Year == year)
@@ -40,12 +40,12 @@ namespace ReadingTracker.Data
                     .ToListAsync();
         }
 
-        public async Task<Book> GetBookById(int? id)
+        public async Task<IBook> GetBookById(int? id)
         {
             return await _context.Books.FindAsync(id) ?? throw new Exception("Book not found");
         }
 
-        public async Task<int> CreateBook(Book book)
+        public async Task<int> CreateBook(IBook book)
         {
             _context.Add(book);
             return await _context.SaveChangesAsync();
@@ -62,7 +62,7 @@ namespace ReadingTracker.Data
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> EditBook(Book book)
+        public async Task<int> EditBook(IBook book)
         {
             _context.Update(book);
             return  await _context.SaveChangesAsync();
@@ -74,7 +74,7 @@ namespace ReadingTracker.Data
             return (_context.Books?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        public async Task<IEnumerable<Book>> SearchForBooks(string? Title, string? Author, DateTime? StartDate, DateTime? EndDate, string? Keyword)
+        public async Task<IEnumerable<IBook>> SearchForBooks(string? Title, string? Author, DateTime? StartDate, DateTime? EndDate, string? Keyword)
         {
 
             var query = _context.Books.AsQueryable();
