@@ -3,14 +3,14 @@
     public interface IBookDataAccess
     {
         public Task<IEnumerable<int>> GetDistinctYears();
-        public Task<IEnumerable<Book>> GetBooksForYear(int year);
-        public Task<Book> GetBookById(int? id);
-        public Task<int> CreateBook(Book book);
+        public Task<IEnumerable<IBook>> GetBooksForYear(int year);
+        public Task<IBook> GetBookById(int? id);
+        public Task<int> CreateBook(IBook book);
 
-        public Task<int> EditBook(Book book);
+        public Task<int> EditBook(IBook book);
         public bool BookExists(int id);
         public Task<int> DeleteBook(int id);
-        public Task<IEnumerable<Book>> SearchForBooks(string? Title, string? Author, DateTime? StartDate, DateTime? EndDate, string? Keyword);
+        public Task<IEnumerable<IBook>> SearchForBooks(string? Title, string? Author, DateTime? StartDate, DateTime? EndDate, string? Keyword);
     }
 
 }
