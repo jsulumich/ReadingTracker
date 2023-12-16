@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using ReadingTracker.Controllers;
-using ReadingTracker.Domain;
+using ReadingTracker.Data;
 using ReadingTracker.Tests.Integration;
 using Xunit;
 
+namespace ReadingTracker.Tests.Integration;
 public class BooksControllerIntegrationTests :  IntegrationTestBase
 {
     private readonly Mock<ILogger<BooksController>> _controllerLogger;
@@ -67,7 +68,7 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
     }
 
     [Fact]
-    public async Task Details_InvalidIdReturnsNotFound()
+    public async Task Details_Invalid_Id_Redirects_To_Index_With_Error()
     {
         // Arrange in base class
 
@@ -75,8 +76,12 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
         var result = await _booksController.Details(4);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result);
+        Assert.IsType<RedirectToActionResult>(result);
 
+        var errorMessage = _booksController.TempData["ErrorMessage"];
+        Assert.NotNull(errorMessage);
+        Assert.IsType<string>(errorMessage);
+        Assert.Equal("Book not found", errorMessage);
     }
 
 
@@ -123,14 +128,17 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
     }
 
     [Fact]
-    public async Task InvalidEdit_ReturnsNotFound()
+    public async Task Edit_Invalid_Id_Redirects_To_Index_With_Error()
     {
         //arrange in base class
         // Act
         var result = await _booksController.Edit(4);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result);
+        var errorMessage = _booksController.TempData["ErrorMessage"];
+        Assert.NotNull(errorMessage);
+        Assert.IsType<string>(errorMessage);
+        Assert.Equal("Book not found", errorMessage);
     }
 
     [Fact]
@@ -145,14 +153,17 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
     }
 
     [Fact]
-    public async Task InvalidDelete_ReturnsNotFound()
+    public async Task Delete_Invalid_Id_Redirects_To_Index_With_Error()
     {
         //arrange in base class
         // Act
         var result = await _booksController.Delete(4);
 
         // Assert
-        Assert.IsType<NotFoundResult>(result);
+        var errorMessage = _booksController.TempData["ErrorMessage"];
+        Assert.NotNull(errorMessage);
+        Assert.IsType<string>(errorMessage);
+        Assert.Equal("Book not found", errorMessage);
     }
 
     [Fact]

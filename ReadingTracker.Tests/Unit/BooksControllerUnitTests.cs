@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using ReadingTracker.Controllers;
-using ReadingTracker.Tests.Unit;
 using Xunit;
 
-namespace ReadingTracker.Tests.ControllerTests
+namespace ReadingTracker.Tests.Unit
 {
     public class BooksControllerUnitTests : UnitTestBase
     {

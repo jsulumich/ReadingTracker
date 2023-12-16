@@ -4,6 +4,7 @@ using Moq;
 using ReadingTracker.Controllers;
 using ReadingTracker.Domain;
 using Xunit;
+
 namespace ReadingTracker.Tests.Integration
 {
     public class SearchControllerIntegrationTests : IntegrationTestBase
@@ -32,7 +33,7 @@ namespace ReadingTracker.Tests.Integration
             var books = CommonAsserts(result);
             Assert.Equal(2, books.Count());
 
-            IEnumerable<Book> expectedBooks = new List<Book>
+            IEnumerable<IBook> expectedBooks = new List<IBook>
             {
                 base.GetBookById(1),
                 base.GetBookById(2)
@@ -55,7 +56,7 @@ namespace ReadingTracker.Tests.Integration
             var books = CommonAsserts(result);
             Assert.Single(books);
 
-            IEnumerable<Book> expectedBooks = new List<Book>
+            IEnumerable<IBook> expectedBooks = new List<IBook>
             {
                 base.GetBookById(3),
             };
@@ -77,7 +78,7 @@ namespace ReadingTracker.Tests.Integration
             var books = CommonAsserts(result);
             Assert.Equal(3, books.Count());
 
-            IEnumerable<Book> expectedBooks = new List<Book>
+            IEnumerable<IBook> expectedBooks = new List<IBook>
             {
                 base.GetBookById(1),
                 base.GetBookById(2),
@@ -101,7 +102,7 @@ namespace ReadingTracker.Tests.Integration
             Assert.Empty(books);
         }
 
-        private static IEnumerable<Book> CommonAsserts(IActionResult result)
+        private static IEnumerable<IBook> CommonAsserts(IActionResult result)
         {
             Assert.NotNull(result);
 
@@ -109,9 +110,9 @@ namespace ReadingTracker.Tests.Integration
             var model = viewResult.Model;
 
             Assert.NotNull(model);
-            Assert.IsAssignableFrom<IEnumerable<Book>>(model);
+            Assert.IsAssignableFrom<IEnumerable<IBook>>(model);
 
-            return (IEnumerable<Book>)model;
+            return (IEnumerable<IBook>)model;
         }
         internal new void Dispose()
         {
