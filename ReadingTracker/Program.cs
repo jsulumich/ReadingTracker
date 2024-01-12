@@ -11,6 +11,9 @@ builder.Services.AddDbContext<ReadingTrackerDbContext>(options => options.UseSql
     builder.Configuration.GetConnectionString("localDb")));
 builder.Services.AddScoped<IBookDataAccess,  BookDataAccess>();
 
+// HttpClient approach
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

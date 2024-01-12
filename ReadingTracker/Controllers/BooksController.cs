@@ -8,11 +8,14 @@ namespace ReadingTracker.Controllers
     {
         private readonly ILogger<BooksController> _logger;
         private readonly IBookDataAccess _bookDataAccess;
+        private readonly IHttpClientFactory httpClientFactory;
 
-        public BooksController(IBookDataAccess bookDataAccess, ILogger<BooksController> logger)
+        public BooksController(IBookDataAccess bookDataAccess, ILogger<BooksController> logger, 
+            IHttpClientFactory httpClientFactory)
         {
             _bookDataAccess = bookDataAccess;
             _logger = logger;
+            this.httpClientFactory = httpClientFactory;
         }
 
         // GET: Books
@@ -32,9 +35,15 @@ namespace ReadingTracker.Controllers
                 }
                 ViewBag.selectedYear = year.Value;
 
-                _logger.LogInformation("Fetched books read for " + year.Value); 
+                _logger.LogInformation("Fetched books read for " + year.Value);
 
-                var booksForSelectedYear = await _bookDataAccess.GetBooksForYear(year.Value);
+                //var booksForSelectedYear = await _bookDataAccess.GetBooksForYear(year.Value);
+
+                // API call approach
+                HttpClient httpClient = httpClientFactory.CreateClient();
+                httpClient.BaseAddress = new Uri("https://localhost:7014");
+                var booksForSelectedYear = 
+                    await httpClient.GetFromJsonAsync<List<Book>>("api/books?=" + year.Value);
 
                 return View(booksForSelectedYear);
             }
