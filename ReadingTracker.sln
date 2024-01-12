@@ -7,9 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingTracker", "ReadingTr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingTracker.Tests", "ReadingTracker.Tests\ReadingTracker.Tests.csproj", "{FA8A00C6-7345-435E-8908-92979BAF3607}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTracker.Domain", "ReadingTracker.Domain\ReadingTracker.Domain.csproj", "{EB34220C-A049-4D7D-955B-7E9F419782A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingTracker.Domain", "ReadingTracker.Domain\ReadingTracker.Domain.csproj", "{EB34220C-A049-4D7D-955B-7E9F419782A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingTracker.Data", "ReadingTracker.Data\ReadingTracker.Data.csproj", "{A17AC2CB-B60A-4339-A051-D2AC710F8BE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingTracker.Data", "ReadingTracker.Data\ReadingTracker.Data.csproj", "{A17AC2CB-B60A-4339-A051-D2AC710F8BE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0DF17663-7B1C-4D7B-8214-FEADFA8827FE}"
+	ProjectSection(SolutionItems) = preProject
+		readme.txt = readme.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

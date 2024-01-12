@@ -12,9 +12,10 @@ builder.Services.AddDbContext<ReadingTrackerDbContext>(options => options.UseSql
 builder.Services.AddScoped<IBookDataAccess,  BookDataAccess>();
 
 // HttpClient approach
-builder.Services.AddHttpClient("ReadingTrackerApiClient", httpClient =>
+builder.Services.AddHttpClient<ReadingTrackerApiClient>(httpClient =>
 {
     // set address in one place, instead of each usage of the client
+    // this could be done here or in the client constructor
     // address hard-coded, should be from configuration
     httpClient.BaseAddress = new Uri("https://localhost:7014");
 });
