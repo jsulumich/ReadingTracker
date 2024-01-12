@@ -40,8 +40,7 @@ namespace ReadingTracker.Controllers
                 //var booksForSelectedYear = await _bookDataAccess.GetBooksForYear(year.Value);
 
                 // API call approach
-                HttpClient httpClient = httpClientFactory.CreateClient();
-                httpClient.BaseAddress = new Uri("https://localhost:7014");
+                HttpClient httpClient = httpClientFactory.CreateClient("ReadingTrackerApiClient");
                 var booksForSelectedYear = 
                     await httpClient.GetFromJsonAsync<List<Book>>("api/books?=" + year.Value);
 
