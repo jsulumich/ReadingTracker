@@ -34,6 +34,19 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.EndDate)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Genre)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.Genre != null)
+            {
+                @Html.DisplayFor(model => model.Genre.Name)
+            }
+            else
+            {
+                <text>N/A</text>
+            }
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PageCount)
         </dt>

@@ -38,7 +38,7 @@ namespace ReadingTracker.Tests.Unit
         }
 
         [Fact]
-        public void Create_ReturnsViewResult()
+        public void Create_ReturnsIActionResult()
         {
             // Arrange in constructor
             
@@ -46,7 +46,7 @@ namespace ReadingTracker.Tests.Unit
             var result = _controller.Create();
 
             // Assert
-            Assert.IsType<ViewResult>(result);
+            Assert.IsType<Task<IActionResult>>(result);
         }
 
     }

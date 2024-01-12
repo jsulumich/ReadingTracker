@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReadingTracker.Domain;
-
 namespace ReadingTracker.Data
 {
     public class ReadingTrackerDbContext : DbContext
@@ -8,7 +6,7 @@ namespace ReadingTracker.Data
         public ReadingTrackerDbContext(DbContextOptions<ReadingTrackerDbContext> options) : base(options) { }
 
         public DbSet<Book> Books { get; set; }
-
+        public DbSet<Genre> Genres { get; set; }
 
     }
 }

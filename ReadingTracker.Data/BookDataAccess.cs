@@ -42,7 +42,10 @@ namespace ReadingTracker.Data
 
         public async Task<IBook> GetBookById(int? id)
         {
-            return await _context.Books.FindAsync(id) ?? throw new Exception("Book not found");
+            return await _context.Books
+                .Include(b => b.Genre)
+                .Where(b => b.Id == id)
+                .FirstOrDefaultAsync() ?? throw new Exception("Book not found");
         }
 
         public async Task<int> CreateBook(IBook book)
@@ -112,6 +115,11 @@ namespace ReadingTracker.Data
             var searchResults = await query.ToListAsync();
 
             return searchResults;
+        }
+
+        public async Task<IEnumerable<IGenre>> GetGenresAsync()
+        {
+            return await _context.Genres.ToListAsync();
         }
 
     }

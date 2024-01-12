@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReadingTracker.Data;
 using ReadingTracker.Domain;
+using ReadingTracker.Models;
 
 namespace ReadingTracker.Controllers
 {
@@ -19,8 +20,8 @@ namespace ReadingTracker.Controllers
         // GET: Books
         public async Task<IActionResult> Index(int? year)
         {
-            try
-            {                             
+            return await TryCatch(async () =>
+            {
                 // Get distinct years from both StartDate and EndDate
                 var distinctYears = await _bookDataAccess.GetDistinctYears();
 
@@ -33,17 +34,12 @@ namespace ReadingTracker.Controllers
                 }
                 ViewBag.selectedYear = year.Value;
 
-                _logger.LogInformation("Fetched books read for " + year.Value); 
+                _logger.LogInformation("Fetched books read for " + year.Value);
 
                 var booksForSelectedYear = await _bookDataAccess.GetBooksForYear(year.Value);
 
                 return View(booksForSelectedYear);
-            }
-            catch(Exception  ex) 
-            { 
-                _logger.LogError(ex.Message);
-                throw;
-            }
+            });
         }
 
         // GET: Books/Details/5
@@ -63,9 +59,17 @@ namespace ReadingTracker.Controllers
         }
 
         // GET: Books/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            return await TryCatch(async () =>
+            {
+                var viewModel = new BookWithGenreList
+                {
+                    Genres = await _bookDataAccess.GetGenresAsync()
+                };
+
+                return View(viewModel);
+            });
         }
 
         // POST: Books/Create
@@ -73,21 +77,25 @@ namespace ReadingTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Author,StartDate,EndDate,PageCount,Rating")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Title,Author,StartDate,EndDate,PageCount,GenreId,Rating")] BookWithGenreList book)
         {
             return await TryCatch(async () =>
             {
                 if (ModelState.IsValid)
                 {
+                    var bookToInsert = CreateBookForDatabase(book);
+
                     _logger.LogInformation("Adding book:" + book.Title);
-                    int result = await _bookDataAccess.CreateBook(book);
+
+                    int result = await _bookDataAccess.CreateBook(bookToInsert);
                     if (result > 0)
                     {
                         TempData["Message"] = "Added \"" + book.Title + "\" to database.";
                     }
                     return RedirectToAction(nameof(Index));
                 }
-                return View(book); ;
+                book.Genres = await _bookDataAccess.GetGenresAsync();
+                return View(book); 
             });
         }
 
@@ -98,7 +106,20 @@ namespace ReadingTracker.Controllers
             {
                 var book = await _bookDataAccess.GetBookById(id);
 
-                return View(book);
+                var viewModel = new BookWithGenreList
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = book.Author,
+                    StartDate = book.StartDate,
+                    EndDate = book.EndDate,
+                    PageCount = book.PageCount,
+                    Rating = book.Rating,
+                    GenreId = book.GenreId,
+                    Genres = await _bookDataAccess.GetGenresAsync()
+                };
+
+                return View(viewModel);
             });
         }
 
@@ -107,7 +128,7 @@ namespace ReadingTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,StartDate,EndDate,PageCount,Rating")] Book book)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Author,StartDate,EndDate,PageCount,GenreId,Rating")] BookWithGenreList book)
         {
             return await TryCatch(async () =>
             {
@@ -121,11 +142,15 @@ namespace ReadingTracker.Controllers
                     try
                     {
                         _logger.LogInformation("Editing Book:" + book.Title);
-                        int result = await _bookDataAccess.EditBook(book);
+
+                        var bookToEdit = CreateBookForDatabase(book);
+                        int result = await _bookDataAccess.EditBook(bookToEdit);
+                        
                         if (result > 0)
                         {
                             TempData["Message"] = "Successfully edited \"" + book.Title + "\"";
                         }
+                        
                         _logger.LogInformation(result + " book record updated");
                     }
                     catch (DbUpdateConcurrencyException)
@@ -141,6 +166,7 @@ namespace ReadingTracker.Controllers
                     }
                     return RedirectToAction(nameof(Index));
                 }
+                book.Genres = await _bookDataAccess.GetGenresAsync();
                 return View(book);
             });
         }
@@ -186,6 +212,21 @@ namespace ReadingTracker.Controllers
                 TempData["ErrorMessage"] = e.Message;
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        private Book CreateBookForDatabase(BookWithGenreList bookWithGenre)
+        {
+            return new Book
+            {
+                Id = bookWithGenre.Id, 
+                Title = bookWithGenre.Title,
+                Author = bookWithGenre.Author,
+                StartDate = bookWithGenre.StartDate,
+                EndDate = bookWithGenre.EndDate,
+                PageCount = bookWithGenre.PageCount,
+                GenreId = bookWithGenre.GenreId,
+                Rating = bookWithGenre.Rating
+            };
         }
 
 

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadingTracker.Data;
 
@@ -10,9 +11,11 @@ using ReadingTracker.Data;
 namespace ReadingTracker.Migrations
 {
     [DbContext(typeof(ReadingTrackerDbContext))]
-    partial class ReadingTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231217012306_AddGenreTableToDatabaseForReal")]
+    partial class AddGenreTableToDatabaseForReal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
@@ -30,9 +33,6 @@ namespace ReadingTracker.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("GenreId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("PageCount")
                         .HasColumnType("INTEGER");
 
@@ -47,8 +47,6 @@ namespace ReadingTracker.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GenreId");
 
                     b.ToTable("Books");
                 });
@@ -66,15 +64,6 @@ namespace ReadingTracker.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
-                });
-
-            modelBuilder.Entity("ReadingTracker.Data.Book", b =>
-                {
-                    b.HasOne("ReadingTracker.Data.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId");
-
-                    b.Navigation("Genre");
                 });
 #pragma warning restore 612, 618
         }

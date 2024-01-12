@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using ReadingTracker.Controllers;
 using ReadingTracker.Data;
-using ReadingTracker.Tests.Integration;
+using ReadingTracker.Models;
 using Xunit;
 
 namespace ReadingTracker.Tests.Integration;
@@ -89,14 +89,16 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
     public async Task Create_AddsBookToDatabase()
     {
         // Arrange
-        var book = new Book
+        var book = new BookWithGenreList
         {
             Title = "Test Book",
             Author = "Test Author",
             StartDate = new DateTime(2023, 11, 01),
             EndDate = new DateTime(2023, 11, 25),
             PageCount = 200,
-            Rating = 5
+            Rating = 5,
+            GenreId = null,
+            Genres = null
         };
 
         // Act
@@ -113,6 +115,7 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
         Assert.Equal(new DateTime(2023, 11, 25), addedBook.EndDate);
         Assert.Equal(200, addedBook.PageCount);
         Assert.Equal(5, addedBook.Rating);
+        Assert.Null(addedBook.GenreId);
     
     }
 
@@ -182,15 +185,17 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
     public async Task Edit_UpdatesBookRecord()
     {
         // Arrange
-        var book = new Book
+        var book = new BookWithGenreList
         {
-            Id=3,
+            Id = 3,
             Title = "Test Book",
             Author = "Test Author",
             StartDate = new DateTime(2023, 11, 01),
             EndDate = new DateTime(2023, 11, 25),
             PageCount = 200,
-            Rating = 5
+            Rating = 5,
+            GenreId = 1,
+            Genres = null
         };
 
        // Ensure the existing entity is not tracked
@@ -216,6 +221,7 @@ public class BooksControllerIntegrationTests :  IntegrationTestBase
         Assert.Equal(new DateTime(2023, 11, 25), editedBook.EndDate);
         Assert.Equal(200, editedBook.PageCount);
         Assert.Equal(5, editedBook.Rating);
+        Assert.Equal(1, editedBook.GenreId);
     }
 
     // Dispose of resources specific to this class

@@ -11,6 +11,8 @@
         public bool BookExists(int id);
         public Task<int> DeleteBook(int id);
         public Task<IEnumerable<IBook>> SearchForBooks(string? Title, string? Author, DateTime? StartDate, DateTime? EndDate, string? Keyword);
+        Task<IEnumerable<IGenre>> GetGenresAsync();
+
     }
 
 }

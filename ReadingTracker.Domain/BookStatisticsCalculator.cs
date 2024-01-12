@@ -11,7 +11,7 @@ public abstract class BookStatisticsCalculator
 
     public async Task<IStatistic> GetStatisticsForYear(int year)
     {
-        var books = await _bookDataAccess.GetBooksForYear(year); //GetBooksForYear(year);
+        var books = await _bookDataAccess.GetBooksForYear(year); 
         
 
         return CreateStatistic(year, TotalBooksRead(books), 
@@ -25,20 +25,21 @@ public abstract class BookStatisticsCalculator
 
     public static string TopAuthor(IEnumerable<IBook> books)
     {
-        return books.GroupBy(book => book.Author)
+        return books.Any() ? 
+            books.GroupBy(book => book.Author)
             .OrderByDescending(group => group.Count())
             .First()
-            .Key;
+            .Key : "N/A";
     }
 
     public static double AverageDaysPerBook(IEnumerable<IBook> books)
     {
-        return books.Average(book => (book.EndDate - book.StartDate).TotalDays);
+        return books.Any() ? books.Average(book => (book.EndDate - book.StartDate).TotalDays) : 0;
     }
 
     public static double? AverageRating(IEnumerable<IBook> books)
     {
-        return books.Average(book => book.Rating);
+        return books.Any() ? books.Average(book => book.Rating) : 0;
     }
 
     public static int? TotalPagesRead(IEnumerable<IBook> books)
