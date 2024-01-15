@@ -48,7 +48,7 @@ public class ReadingTrackerApiClient : IReadingTrackerApiClient //: IBookDataAcc
     {
         // implementation of the other methods is an exercise for the reader
         Uri uri = new Uri(_httpClient.BaseAddress, $"/api/books?year={year}");
-        return await _httpClient.GetFromJsonAsync<IEnumerable<Book>>(uri);
+        return await _httpClient.GetFromJsonAsync<IEnumerable<Book>>(uri) ?? Array.Empty<Book>();
     }
 
     public Task<IEnumerable<int>> GetDistinctYears()

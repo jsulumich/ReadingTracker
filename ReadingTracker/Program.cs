@@ -19,6 +19,7 @@ builder.Services.AddHttpClient<ReadingTrackerApiClient>(httpClient =>
     // address hard-coded, should be from configuration
     httpClient.BaseAddress = new Uri("https://localhost:7014");
 });
+builder.Services.AddTransient<IReadingTrackerApiClient, ReadingTrackerApiClient>();
 
 var app = builder.Build();
 

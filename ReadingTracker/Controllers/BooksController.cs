@@ -8,14 +8,15 @@ namespace ReadingTracker.Controllers
     {
         private readonly ILogger<BooksController> _logger;
         private readonly IBookDataAccess _bookDataAccess;
-        private readonly IHttpClientFactory httpClientFactory;
+        private readonly IReadingTrackerApiClient _readingTrackerApiClient;
 
         public BooksController(IBookDataAccess bookDataAccess, ILogger<BooksController> logger, 
-            IHttpClientFactory httpClientFactory)
+            IReadingTrackerApiClient readingTrackerApiClient)
         {
-            _bookDataAccess = bookDataAccess;
-            _logger = logger;
-            this.httpClientFactory = httpClientFactory;
+            _bookDataAccess = bookDataAccess ?? throw new ArgumentNullException(nameof(bookDataAccess));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _readingTrackerApiClient = readingTrackerApiClient 
+                                       ?? throw new ArgumentNullException(nameof(readingTrackerApiClient));
         }
 
         // GET: Books
@@ -40,9 +41,7 @@ namespace ReadingTracker.Controllers
                 //var booksForSelectedYear = await _bookDataAccess.GetBooksForYear(year.Value);
 
                 // API call approach
-                HttpClient httpClient = httpClientFactory.CreateClient("ReadingTrackerApiClient");
-                var booksForSelectedYear = 
-                    await httpClient.GetFromJsonAsync<List<Book>>("api/books?=" + year.Value);
+                var booksForSelectedYear = await _readingTrackerApiClient.GetBooksForYear(year.Value);
 
                 return View(booksForSelectedYear);
             }
