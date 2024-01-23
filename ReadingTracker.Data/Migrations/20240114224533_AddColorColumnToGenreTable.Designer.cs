@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReadingTracker.Data;
 
@@ -10,9 +11,11 @@ using ReadingTracker.Data;
 namespace ReadingTracker.Migrations
 {
     [DbContext(typeof(ReadingTrackerDbContext))]
-    partial class ReadingTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240114224533_AddColorColumnToGenreTable")]
+    partial class AddColorColumnToGenreTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.12");
@@ -76,8 +79,7 @@ namespace ReadingTracker.Migrations
                 {
                     b.HasOne("ReadingTracker.Data.Genre", "Genre")
                         .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("GenreId");
 
                     b.Navigation("Genre");
                 });

@@ -11,17 +11,48 @@ public abstract class BookStatisticsCalculator
 
     public async Task<IStatistic> GetStatisticsForYear(int year)
     {
-        var books = await _bookDataAccess.GetBooksForYear(year); 
-        
+        var books = await _bookDataAccess.GetBooksForYear(year);
+        var genres = await _bookDataAccess.GetGenresAsync();
 
-        return CreateStatistic(year, TotalBooksRead(books), 
-            TotalPagesRead(books), 
-            AverageRating(books), 
-            AverageDaysPerBook(books), 
-            TopAuthor(books));
+
+        return CreateStatistic(year, TotalBooksRead(books),
+            TotalPagesRead(books),
+            AverageRating(books),
+            AverageDaysPerBook(books),
+            TopAuthor(books),
+            GenreBreakdown(books, genres)
+            );
     }
+
     protected abstract IStatistic CreateStatistic(int year, int totalBooksRead, int? totalPagesRead,
-        double? averageRating, double averageDaysPerBook, string topAuthor);
+    double? averageRating, double averageDaysPerBook, string topAuthor, Dictionary<string, Tuple<int, string>> genreBreakdown);
+
+
+    private Dictionary<string, Tuple<int, string>> GenreBreakdown(IEnumerable<IBook> books, IEnumerable<IGenre> genres)
+    {
+
+        var genreBreakdown = new Dictionary<string, Tuple<int, string>>();
+
+        if (books.Any())
+        {
+
+            var genreCounts = books.GroupBy(book => book.GenreId)
+                                   .ToDictionary(group => group.Key ?? 0, group => group.Count());
+
+            var totalBooks = books.Count();
+
+            foreach (var genreCount in genreCounts)
+            {
+                var genreName = genres.FirstOrDefault(g => g.Id == genreCount.Key)?.Name ?? "Not Specified";
+                var color = genres.FirstOrDefault(g => g.Id == genreCount.Key)?.Color ?? "#808080";
+                var percentage = (int)Math.Round((double)genreCount.Value / totalBooks * 100);
+
+                genreBreakdown.Add(genreName, new Tuple<int, string>(percentage, color));
+            }
+        }
+
+        return genreBreakdown;
+    }
 
     public static string TopAuthor(IEnumerable<IBook> books)
     {

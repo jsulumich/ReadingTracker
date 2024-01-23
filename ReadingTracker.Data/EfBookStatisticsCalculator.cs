@@ -11,7 +11,7 @@ public class EfBookStatisticsCalculator : BookStatisticsCalculator
     }
 
     protected override IStatistic CreateStatistic(int year, int totalBooksRead, int? totalPagesRead, double? averageRating,
-        double averageDaysPerBook, string topAuthor)
+        double averageDaysPerBook, string topAuthor, Dictionary<string, Tuple<int, string>> genreBreakdown)
     {
         return new Statistic
         {
@@ -20,7 +20,8 @@ public class EfBookStatisticsCalculator : BookStatisticsCalculator
             TotalPagesRead = totalPagesRead,
             AverageRating = averageRating,
             AverageDaysPerBook = averageDaysPerBook,
-            TopAuthor = topAuthor
+            TopAuthor = topAuthor,
+            GenreBreakdown = genreBreakdown
         };
     }
 }

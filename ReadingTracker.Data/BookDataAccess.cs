@@ -119,8 +119,45 @@ namespace ReadingTracker.Data
 
         public async Task<IEnumerable<IGenre>> GetGenresAsync()
         {
-            return await _context.Genres.ToListAsync();
+            return await _context.Genres.OrderBy(g => g.Name).ToListAsync();
         }
+
+        public async Task<IGenre> GetGenreById(int? id)
+        {
+            return await _context.Genres
+                .Where(g => g.Id == id)
+                .FirstOrDefaultAsync() ?? throw new Exception("Genre not found");
+        }
+
+        public IGenre GetEmptyGenre()
+        {
+            return new Genre();
+        }
+
+        public async Task<int> CreateGenre(IGenre genre)
+        {
+            _context.Add(genre);
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> EditGenre(IGenre genre)
+        {
+            _context.Update(genre);
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteGenre(int id)
+        {
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre != null)
+            {
+                _context.Genres.Remove(genre);
+            }
+
+            return await _context.SaveChangesAsync();
+        }
+
+
 
     }
 

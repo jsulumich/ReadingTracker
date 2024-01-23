@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Genre>
+<h2>Genres</h2>
+
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGenreModal">Add Genre</button>
+<br /><br/>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info" id="message">
+        @TempData["Message"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" id="message">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+
+<table class="table table-hover">
+    <thead>
+        <tr class="table-light">
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+               <class style="background-color:@item.Color; width: 20px; height: 20px; display: inline-block;"></class>
+            </td>
+            <td>
+                    <a class="editItemBtn" asp-route-id="@item.Id" title="Edit" data-bs-toggle="modal" style="text-decoration: none;"  data-bs-target="@("#EditGenre-"+item.Id)" data-url="@Url.Action($"Edit/{item.Id}")">
+                        <i class="bi bi-pencil"></i>
+                    </a> |
+                    @await Html.PartialAsync("_EditGenrePartialView", item)
+                    <a asp-action="Delete" asp-route-id="@item.Id" title="Delete" data-bs-toggle="modal" style="text-decoration: none;" data-bs-target="@("#DeleteGenre-"+item.Id)" data-url="@Url.Action($"Delete/{item.Id}")">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                    @await Html.PartialAsync("_DeleteGenrePartialView", item)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_AddGenrePartialView", new Genre())

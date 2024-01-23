@@ -10,4 +10,5 @@ public class Statistic : IStatistic
     public double? AverageRating { get; set; }
     public double? AverageDaysPerBook { get; set; }
     public string? TopAuthor { get; set; }
+    public Dictionary<string, Tuple<int, string>>? GenreBreakdown { get; set; }
 }

@@ -82,10 +82,11 @@ namespace ReadingTracker.Tests.Integration
         }
 
         protected override IStatistic CreateStatistic(int year, int totalBooksRead, int? totalPagesRead,
-            double? averageRating, double averageDaysPerBook, string topAuthor)
+            double? averageRating, double averageDaysPerBook, string topAuthor, Dictionary<string, Tuple<int, string>> genreBreakdown)
         {
             return _mockStatistic;
         }
+
     }
 
 }

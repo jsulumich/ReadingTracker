@@ -2,10 +2,12 @@
 
 public interface IStatistic
 {
-    public int? SelectedYear { get; set; }
-    public int? TotalBooksRead { get; set; }
-    public int? TotalPagesRead { get; set; }
-    public double? AverageRating { get; set; }
-    public double? AverageDaysPerBook { get; set; }
-    public string? TopAuthor { get; set; }
+    int? SelectedYear { get; set; }
+    int? TotalBooksRead { get; set; }
+    int? TotalPagesRead { get; set; }
+    double? AverageRating { get; set; }
+    double? AverageDaysPerBook { get; set; }
+    string? TopAuthor { get; set; }
+    Dictionary<string, Tuple<int, string>>? GenreBreakdown { get; set; }
+
 }
